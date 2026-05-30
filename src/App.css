@@ -264,7 +264,7 @@ body {
 .form-group input:disabled { opacity: 0.6; }
 
 .form-select {
-  width: 30%;
+  width: 40%;
   padding: 0.65rem 1rem;
   border: 2px solid rgba(193, 59, 108, 0.22);
   border-radius: 12px;
