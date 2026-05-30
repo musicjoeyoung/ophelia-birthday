@@ -118,7 +118,7 @@ function App() {
         </h1>
         <div className="details">
           <p className="detail-highlight">Painting, printmaking, food, &amp; fun!</p>
-          <p className="detail-highlight">11:00 am &ndash; 1:00 PM</p>
+          <p className="detail-highlight">11:00 am &ndash; 1:00 pm</p>
           <div className="detail-divider" />
           <p>Little Pulp</p>
           <p>8016 Cooper Avenue</p>

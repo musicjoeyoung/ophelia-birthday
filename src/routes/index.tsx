@@ -140,7 +140,7 @@ function Home() {
                 </h1>
                 <div className="details">
                     <p className="detail-highlight">Painting, printmaking, food, &amp; fun!</p>
-                    <p className="detail-highlight">11:00 am &ndash; 1:00 PM</p>
+                    <p className="detail-highlight">11:00 am &ndash; 1:00 pm</p>
                     <div className="detail-divider" />
                     <p>Little Pulp</p>
                     <p>8016 Cooper Avenue</p>
@@ -208,9 +208,6 @@ function Home() {
                                     {attending !== null && (
                                         <>
                                             <div className="form-group">
-                                                <label htmlFor="rsvp-child-name">
-                                                    {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest'}
-                                                </label>
                                                 {attending && (
                                                     <select
                                                         id="rsvp-child-count"
@@ -218,12 +215,14 @@ function Home() {
                                                         value={childCount}
                                                         onChange={(e) => setChildCount(Number(e.target.value) as 1 | 2)}
                                                         disabled={formState === 'loading'}
-                                                        style={{ marginBottom: '0.5rem' }}
                                                     >
                                                         <option value={1}>1 child</option>
                                                         <option value={2}>2 children</option>
                                                     </select>
                                                 )}
+                                                <label htmlFor="rsvp-child-name">
+                                                    {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest'}
+                                                </label>
                                                 <input
                                                     id="rsvp-child-name"
                                                     type="text"
@@ -252,20 +251,19 @@ function Home() {
                                             {attending && (
                                                 <>
                                                     <div className="form-group">
-                                                        <label htmlFor="rsvp-adult-name">
-                                                            {adultCount === 2 ? 'First adult\'s name' : 'Name of adult(s) attending'}
-                                                        </label>
                                                         <select
                                                             id="rsvp-adult-count"
                                                             className="form-select"
                                                             value={adultCount}
                                                             onChange={(e) => setAdultCount(Number(e.target.value) as 1 | 2)}
                                                             disabled={formState === 'loading'}
-                                                            style={{ marginBottom: '0.5rem' }}
                                                         >
                                                             <option value={1}>1 adult</option>
                                                             <option value={2}>2 adults</option>
                                                         </select>
+                                                        <label htmlFor="rsvp-adult-name">
+                                                            {adultCount === 2 ? 'First adult\'s name' : 'Name of adult(s) attending'}
+                                                        </label>
                                                         <input
                                                             id="rsvp-adult-name"
                                                             type="text"
