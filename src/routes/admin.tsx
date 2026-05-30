@@ -13,9 +13,12 @@ export const Route = createFileRoute('/admin')({
 type Rsvp = {
     id: number
     childName: string
+    childName2: string | null
     adultName: string
+    adultName2: string | null
     email: string
     attending: boolean
+    message: string | null
     createdAt: string
 }
 
@@ -152,12 +155,15 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
 
     function downloadCSV() {
         const rows = [
-            ['Child Name', 'Adult Name', 'Email', 'Attending', 'RSVP Date'],
+            ['Child Name', 'Child 2', 'Adult Name', 'Adult 2', 'Email', 'Attending', 'Message', 'RSVP Date'],
             ...rsvps.map((r) => [
                 r.childName,
+                r.childName2 ?? '',
                 r.adultName,
+                r.adultName2 ?? '',
                 r.email,
                 r.attending ? 'Yes' : 'No',
+                r.message ?? '',
                 new Date(r.createdAt).toLocaleDateString(),
             ]),
         ]
@@ -213,10 +219,11 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Child</th>
+                                    <th>Child(ren)</th>
                                     <th>Adult(s)</th>
                                     <th>Email</th>
                                     <th>Attending</th>
+                                    <th>Message</th>
                                     <th>Date</th>
                                 </tr>
                             </thead>
@@ -235,14 +242,15 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                                                 onClick={(e) => e.stopPropagation()}
                                             />
                                         </td>
-                                        <td>{r.childName}</td>
-                                        <td>{r.adultName}</td>
+                                        <td>{r.childName}{r.childName2 ? ` & ${r.childName2}` : ''}</td>
+                                        <td>{r.adultName}{r.adultName2 ? ` & ${r.adultName2}` : ''}</td>
                                         <td>{r.email}</td>
                                         <td>
                                             <span className={`admin-badge ${r.attending ? 'admin-badge--yes' : 'admin-badge--no'}`}>
                                                 {r.attending ? 'Yes' : 'No'}
                                             </span>
                                         </td>
+                                        <td className="admin-table__message">{r.message ?? '—'}</td>
                                         <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}

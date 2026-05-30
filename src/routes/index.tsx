@@ -44,15 +44,25 @@ function Home() {
     const [formState, setFormState] = useState<FormState>('idle')
     const [errorMsg, setErrorMsg] = useState('')
     const [childName, setChildName] = useState('')
+    const [childCount, setChildCount] = useState<1 | 2>(1)
+    const [childName2, setChildName2] = useState('')
     const [adultName, setAdultName] = useState('')
+    const [adultCount, setAdultCount] = useState<1 | 2>(1)
+    const [adultName2, setAdultName2] = useState('')
     const [email, setEmail] = useState('')
     const [attending, setAttending] = useState<boolean | null>(null)
+    const [message, setMessage] = useState('')
 
     function resetForm() {
         setChildName('')
+        setChildCount(1)
+        setChildName2('')
         setAdultName('')
+        setAdultCount(1)
+        setAdultName2('')
         setEmail('')
         setAttending(null)
+        setMessage('')
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -68,7 +78,15 @@ function Home() {
             const res = await fetch(`${API_URL}/api/rsvp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ child_name: childName, adult_name: adultName, email, attending }),
+                body: JSON.stringify({
+                    child_name: childName,
+                    ...(childCount === 2 && childName2.trim() ? { child_name_2: childName2 } : {}),
+                    adult_name: adultName,
+                    ...(adultCount === 2 && adultName2.trim() ? { adult_name_2: adultName2 } : {}),
+                    email,
+                    attending,
+                    ...(message.trim() ? { message } : {}),
+                }),
             })
             if (!res.ok) {
                 const body = await res.json().catch(() => ({}))
@@ -176,29 +194,85 @@ function Home() {
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="rsvp-child-name">Name of child attending</label>
+                                        <label htmlFor="rsvp-child-count">How many children attending?</label>
+                                        <select
+                                            id="rsvp-child-count"
+                                            className="form-select"
+                                            value={childCount}
+                                            onChange={(e) => setChildCount(Number(e.target.value) as 1 | 2)}
+                                            disabled={formState === 'loading'}
+                                        >
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="rsvp-child-name">
+                                            {childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending'}
+                                        </label>
                                         <input
                                             id="rsvp-child-name"
                                             type="text"
                                             value={childName}
                                             onChange={(e) => setChildName(e.target.value)}
-                                            placeholder="Name of child attending"
+                                            placeholder="Child's name"
                                             required
                                             disabled={formState === 'loading'}
                                         />
                                     </div>
+                                    {childCount === 2 && (
+                                        <div className="form-group">
+                                            <label htmlFor="rsvp-child-name-2">Second child's name</label>
+                                            <input
+                                                id="rsvp-child-name-2"
+                                                type="text"
+                                                value={childName2}
+                                                onChange={(e) => setChildName2(e.target.value)}
+                                                placeholder="Child's name"
+                                                disabled={formState === 'loading'}
+                                            />
+                                        </div>
+                                    )}
                                     <div className="form-group">
-                                        <label htmlFor="rsvp-adult-name">Name of adult(s) attending</label>
+                                        <label htmlFor="rsvp-adult-count">How many adults attending?</label>
+                                        <select
+                                            id="rsvp-adult-count"
+                                            className="form-select"
+                                            value={adultCount}
+                                            onChange={(e) => setAdultCount(Number(e.target.value) as 1 | 2)}
+                                            disabled={formState === 'loading'}
+                                        >
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="rsvp-adult-name">
+                                            {adultCount === 2 ? 'First adult\'s name' : 'Name of adult(s) attending'}
+                                        </label>
                                         <input
                                             id="rsvp-adult-name"
                                             type="text"
                                             value={adultName}
                                             onChange={(e) => setAdultName(e.target.value)}
-                                            placeholder="Name adult(s) attending"
+                                            placeholder="Adult's name"
                                             required
                                             disabled={formState === 'loading'}
                                         />
                                     </div>
+                                    {adultCount === 2 && (
+                                        <div className="form-group">
+                                            <label htmlFor="rsvp-adult-name-2">Second adult's name</label>
+                                            <input
+                                                id="rsvp-adult-name-2"
+                                                type="text"
+                                                value={adultName2}
+                                                onChange={(e) => setAdultName2(e.target.value)}
+                                                placeholder="Adult's name"
+                                                disabled={formState === 'loading'}
+                                            />
+                                        </div>
+                                    )}
                                     <div className="form-group">
                                         <label htmlFor="rsvp-email">Email</label>
                                         <input
@@ -209,6 +283,18 @@ function Home() {
                                             placeholder="you@example.com"
                                             required
                                             autoComplete="email"
+                                            disabled={formState === 'loading'}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="rsvp-message">Leave us a message <span className="form-label-optional">(optional)</span></label>
+                                        <textarea
+                                            id="rsvp-message"
+                                            className="form-textarea"
+                                            value={message}
+                                            onChange={(e) => setMessage(e.target.value)}
+                                            placeholder="Can't wait to celebrate with you! 🎉"
+                                            rows={3}
                                             disabled={formState === 'loading'}
                                         />
                                     </div>

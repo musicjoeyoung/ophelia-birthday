@@ -261,6 +261,50 @@ body {
 .form-group input:focus { border-color: var(--rose); }
 .form-group input:disabled { opacity: 0.6; }
 
+.form-select {
+  padding: 0.65rem 1rem;
+  border: 2px solid rgba(193, 59, 108, 0.22);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--rose);
+  background: var(--white);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c13b6c' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+.form-select:focus { border-color: var(--rose); }
+.form-select:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.form-textarea {
+  padding: 0.65rem 1rem;
+  border: 2px solid rgba(193, 59, 108, 0.22);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--rose);
+  background: var(--white);
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+.form-textarea::placeholder { color: rgba(193, 59, 108, 0.38); }
+.form-textarea:focus { border-color: var(--rose); }
+.form-textarea:disabled { opacity: 0.6; }
+
+.form-label-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--rose-light);
+  font-size: 0.75rem;
+}
+
 .form-error {
   font-size: 0.875rem;
   color: #c0392b;
@@ -692,6 +736,15 @@ body {
 }
 .admin-badge--yes { background: #e8f5e9; color: #2e7d32; }
 .admin-badge--no  { background: #f3e5f5; color: #6a1b9a; }
+
+.admin-table__message {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: italic;
+  color: var(--rose-light);
+}
 
 .admin-empty {
   text-align: center;
