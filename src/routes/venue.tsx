@@ -20,23 +20,23 @@ function VenuePage() {
                     </p>
                     <p className="venue-card__desc">
                         A creative studio where kids explore art through painting, printmaking, and more.
-                        Check their FAQ for everything you need to know before arriving.
+                        Check their website for everything you need to know before arriving.
                     </p>
-                    <a
-                        href="https://www.littlepulp.com/pages/faqs"
+                    {/*                     <a
+                        href="https://www.littlepulp.com/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="venue-link"
                     >
                         Little Pulp FAQ ↗
-                    </a>
+                    </a> */}
                 </div>
 
                 <div className="venue-card">
                     <div className="venue-card__icon" aria-hidden="true">🅿️</div>
                     <h2 className="venue-card__name">Parking</h2>
                     <p className="venue-card__desc">
-                        Free parking is available at Atlas Park, the shopping center right nearby.
+                        Parking is available at Atlas Park, the shopping center right nearby.
                         It&rsquo;s an easy walk to Little Pulp from there.
                     </p>
                     <a

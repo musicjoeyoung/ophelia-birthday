@@ -757,6 +757,29 @@ body {
   color: var(--rose-light);
 }
 
+.msg-details { display: inline; }
+.msg-details summary {
+  display: inline;
+  cursor: pointer;
+  list-style: none;
+  color: var(--rose-mid);
+  text-decoration: underline dotted;
+  white-space: nowrap;
+}
+.msg-details summary::-webkit-details-marker { display: none; }
+.msg-details[open] {
+  display: block;
+  white-space: normal;
+  font-style: italic;
+  color: var(--rose-light);
+  background: var(--cream);
+  border: 1px solid rgba(193,59,108,0.15);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  max-width: 260px;
+}
+.msg-details[open] summary { display: block; margin-bottom: 0.25rem; }
+
 .admin-empty {
   text-align: center;
   color: var(--rose-light);

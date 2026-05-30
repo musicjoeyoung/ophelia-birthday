@@ -250,7 +250,13 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                                                 {r.attending ? 'Yes' : 'No'}
                                             </span>
                                         </td>
-                                        <td className="admin-table__message">{r.message ?? '—'}</td>
+                                        <td className="admin-table__message">
+                                            {r.message
+                                                ? r.message.length > 40
+                                                    ? <details className="msg-details"><summary>{r.message.slice(0, 40)}…</summary>{r.message}</details>
+                                                    : r.message
+                                                : '—'}
+                                        </td>
                                         <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
