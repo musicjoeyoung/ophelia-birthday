@@ -307,6 +307,15 @@ body {
   font-size: 0.75rem;
 }
 
+.rsvp-context {
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: -0.25rem 0 0.75rem;
+  line-height: 1.4;
+}
+.rsvp-context--yes { color: #2e7d32; }
+.rsvp-context--no  { color: var(--rose-mid); }
+
 .form-error {
   font-size: 0.875rem;
   color: #c0392b;
