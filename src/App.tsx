@@ -1,5 +1,6 @@
-import { useState } from 'react'
 import './App.css'
+
+import { useState } from 'react'
 
 const API_URL = import.meta.env.VITE_API_URL ?? ''
 
@@ -116,7 +117,7 @@ function App() {
           Ophelia&rsquo;s 5<sup>th</sup> Birthday
         </h1>
         <div className="details">
-          <p className="detail-highlight">Paints, food, &amp; fun!</p>
+          <p className="detail-highlight">Painting, printmaking, food, &amp; fun!</p>
           <p className="detail-highlight">11:00 am &ndash; 1:00 PM</p>
           <div className="detail-divider" />
           <p>Little Pulp</p>

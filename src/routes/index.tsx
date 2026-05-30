@@ -139,7 +139,7 @@ function Home() {
                     Ophelia&rsquo;s 5<sup>th</sup> Birthday
                 </h1>
                 <div className="details">
-                    <p className="detail-highlight">Paints, food, &amp; fun!</p>
+                    <p className="detail-highlight">Painting, printmaking, food, &amp; fun!</p>
                     <p className="detail-highlight">11:00 am &ndash; 1:00 PM</p>
                     <div className="detail-divider" />
                     <p>Little Pulp</p>

@@ -20,7 +20,7 @@ function VenuePage() {
                     </p>
                     <p className="venue-card__desc">
                         A creative studio where kids explore art through painting, printmaking, and more.
-                        Check their website for everything you need to know before arriving.
+                        They provide smocks. Wear clothing that can get messy!
                     </p>
                     {/*                     <a
                         href="https://www.littlepulp.com/"
