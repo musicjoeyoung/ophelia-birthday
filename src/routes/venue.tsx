@@ -35,7 +35,7 @@ function VenuePage() {
                     </p>
 
                     <a
-                        href="https://www.google.com/maps/@40.7089571,-73.8693817,17z?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D"
+                        href="https://maps.app.goo.gl/pDRcBvAxjHp5tsjV9"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="venue-link"
