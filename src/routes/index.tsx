@@ -43,6 +43,7 @@ function Home() {
     const [modalOpen, setModalOpen] = useState(false)
     const [formState, setFormState] = useState<FormState>('idle')
     const [errorMsg, setErrorMsg] = useState('')
+    const [submittedAttending, setSubmittedAttending] = useState<boolean>(true)
     const [childName, setChildName] = useState('')
     const [childCount, setChildCount] = useState<1 | 2>(1)
     const [childName2, setChildName2] = useState('')
@@ -92,6 +93,7 @@ function Home() {
                 const body = await res.json().catch(() => ({}))
                 throw new Error((body as { message?: string }).message ?? 'Something went wrong')
             }
+            setSubmittedAttending(attending === true)
             setFormState('success')
             resetForm()
         } catch (err) {
@@ -166,9 +168,9 @@ function Home() {
 
                         {formState === 'success' ? (
                             <div className="modal-success">
-                                <div className="success-icon">🎉</div>
-                                <h2>You&rsquo;re on the list!</h2>
-                                <p>We can&rsquo;t wait to celebrate with you!</p>
+                                <div className="success-icon">{submittedAttending ? '🎉' : '😢'}</div>
+                                <h2>{submittedAttending ? 'You\'re on the list!' : 'We\'ll miss you!'}</h2>
+                                <p>{submittedAttending ? 'We can\'t wait to celebrate with you!' : 'We\'re so sorry you can\'t make it. 💕'}</p>
                                 <button className="rsvp-btn" onClick={closeModal}>Close</button>
                             </div>
                         ) : (
@@ -201,7 +203,7 @@ function Home() {
                                     )}
                                     {attending === false && (
                                         <p className="rsvp-context rsvp-context--no">
-                                            So sorry you can&rsquo;t make it. We&rsquo;ll miss you. Please provide these additional details.
+                                            So sorry you can&rsquo;t make it! We&rsquo;ll miss you. Please provide these additional details.
                                         </p>
                                     )}
 

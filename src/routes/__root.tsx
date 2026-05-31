@@ -14,7 +14,7 @@ function Root() {
                     Home
                 </Link>
                 <Link to="/venue" className="site-nav__link">
-                    Venue &amp; Parking
+                    Party Information
                 </Link>
             </nav>
             <Outlet />

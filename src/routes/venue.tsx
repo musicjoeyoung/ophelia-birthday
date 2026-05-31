@@ -9,7 +9,7 @@ function VenuePage() {
     return (
         <main className="page">
             <section className="info">
-                <h1 className="birthday-title">Venue &amp; Parking</h1>
+                <h1 className="birthday-title">Party Information</h1>
 
                 <div className="venue-card">
                     <div className="venue-card__icon" aria-hidden="true">🎨</div>
@@ -19,17 +19,17 @@ function VenuePage() {
                         Glendale, NY 11385
                     </p>
                     <p className="venue-card__desc">
-                        A creative studio where kids explore art through painting, printmaking, and more.
-                        They provide smocks. Wear clothing that can get messy!
+                        A creative studio where kids (and adults) explore art through painting, printmaking, and more.
+                        They provide smocks but please wear clothing that can get messy!
                     </p>
-                    {/*                     <a
-                        href="https://www.littlepulp.com/"
+                    <a
+                        href="https://www.shopatlaspark.com/directory-map#/profile?location=1056810"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="venue-link"
                     >
-                        Little Pulp FAQ ↗
-                    </a> */}
+                        Locating Little Pulp ↗
+                    </a>
                 </div>
 
                 <div className="venue-card">
@@ -39,6 +39,15 @@ function VenuePage() {
                         Parking is available at Atlas Park, the shopping center right nearby.
                         It&rsquo;s an easy walk to Little Pulp from there.
                     </p>
+                    <b>Parking Options:</b>
+
+                    <ul className="venue-card__list">
+                        <li>Free street parking on nearby neighborhood streets (less availability)</li>
+                        <li>Garage parking at Atlas ($6 for 2-3 hours)</li>
+                        <li>Outdoor parking at Atlas ($20 for more than 2 hours)</li>
+                    </ul>
+
+
                     <a
                         href="https://www.shopatlaspark.com/visit"
                         target="_blank"
