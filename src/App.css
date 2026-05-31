@@ -315,8 +315,7 @@ body {
   margin: -0.25rem 0 0.75rem;
   line-height: 1.4;
 }
-.rsvp-context--yes { color: #2e7d32; }
-.rsvp-context--no  { color: var(--rose-mid); }
+.rsvp-context--yes, .rsvp-context--no  { color: var(--rose-mid); }
 
 .form-error {
   font-size: 0.875rem;
@@ -346,6 +345,8 @@ body {
 .attending-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--rose); }
 .attending-btn--yes,
 .attending-btn--no { background: var(--rose); border-color: var(--rose); color: var(--white); }
+.attending-btn--yes:hover:not(:disabled),
+.attending-btn--no:hover:not(:disabled) { border-color: #7c3aed; color: var(--white); }
 .attending-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 /* ── Success state ────────────────────────────────────────────────────────── */
