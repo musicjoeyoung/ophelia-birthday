@@ -237,6 +237,16 @@ function Home() {
                 <button className="rsvp-btn" onClick={() => setModalOpen(true)}>
                     RSVP
                 </button>
+                <button
+                    type="button"
+                    className="change-rsvp-link"
+                    onClick={() => {
+                        setIsUpdateMode(true)
+                        setModalOpen(true)
+                    }}
+                >
+                    Need to change your RSVP?
+                </button>
             </section>
 
             {modalOpen && (
