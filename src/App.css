@@ -325,6 +325,22 @@ body {
   font-weight: 600;
 }
 
+.update-rsvp-btn {
+  display: block;
+  margin: 0.5rem auto 0;
+  background: none;
+  border: none;
+  color: #c13b6c;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.update-rsvp-btn:hover {
+  color: #8b0000;
+}
+
 /* ── Attending toggle ─────────────────────────────────────────────────────── */
 .attending-toggle {
   display: flex;

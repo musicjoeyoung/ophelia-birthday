@@ -73,6 +73,7 @@ function Home() {
     const [modalOpen, setModalOpen] = useState(false)
     const [formState, setFormState] = useState<FormState>('idle')
     const [errorMsg, setErrorMsg] = useState('')
+    const [isDuplicate, setIsDuplicate] = useState(false)
     const [submittedAttending, setSubmittedAttending] = useState<boolean>(true)
     const [childName, setChildName] = useState('')
     const [childCount, setChildCount] = useState<1 | 2>(1)
@@ -94,6 +95,7 @@ function Home() {
         setEmail('')
         setAttending(null)
         setMessage('')
+        setIsDuplicate(false)
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -105,9 +107,56 @@ function Home() {
         }
         setFormState('loading')
         setErrorMsg('')
+        setIsDuplicate(false)
         try {
             const res = await fetch(`${API_URL}/api/rsvp`, {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    child_name: childName,
+                    ...(attending && childCount === 2 && childName2.trim() ? { child_name_2: childName2 } : {}),
+                    ...(attending ? { adult_name: adultName } : {}),
+                    ...(attending && adultCount === 2 && adultName2.trim() ? { adult_name_2: adultName2 } : {}),
+                    email,
+                    attending,
+                    ...(message.trim() ? { message } : {}),
+                }),
+            })
+            if (res.status === 409) {
+                setFormState('error')
+                setIsDuplicate(true)
+                setErrorMsg("You've already RSVP'd with that email!")
+                return
+            }
+            if (!res.ok) {
+                const body = await res.json().catch(() => ({}))
+                throw new Error((body as { message?: string }).message ?? 'Something went wrong')
+            }
+            setSubmittedAttending(attending === true)
+            setFormState('success')
+            resetForm()
+        } catch (err) {
+            setFormState('error')
+            setErrorMsg(err instanceof Error ? err.message : 'Something went wrong')
+        }
+    }
+
+    function closeModal() {
+        setModalOpen(false)
+        setFormState('idle')
+        setErrorMsg('')
+        setIsDuplicate(false)
+        resetForm()
+    }
+
+    async function handleUpdate() {
+        if (attending === null) return
+        setFormState('loading')
+        setErrorMsg('')
+        setIsDuplicate(false)
+        try {
+            const res = await fetch(`${API_URL}/api/rsvp`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     child_name: childName,
@@ -130,13 +179,6 @@ function Home() {
             setFormState('error')
             setErrorMsg(err instanceof Error ? err.message : 'Something went wrong')
         }
-    }
-
-    function closeModal() {
-        setModalOpen(false)
-        setFormState('idle')
-        setErrorMsg('')
-        resetForm()
     }
 
     return (
@@ -351,7 +393,18 @@ function Home() {
                                             </div>
 
                                             {formState === 'error' && (
-                                                <p className="form-error" role="alert">{errorMsg}</p>
+                                                <div role="alert">
+                                                    <p className="form-error">{errorMsg}</p>
+                                                    {isDuplicate && (
+                                                        <button
+                                                            type="button"
+                                                            className="update-rsvp-btn"
+                                                            onClick={handleUpdate}
+                                                        >
+                                                            Update my RSVP →
+                                                        </button>
+                                                    )}
+                                                </div>
                                             )}
                                             <button type="submit" className="rsvp-btn" disabled={formState === 'loading'}>
                                                 {formState === 'loading' ? 'Sending…' : attending ? 'Count me in!' : 'Send RSVP'}
