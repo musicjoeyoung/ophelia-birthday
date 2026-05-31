@@ -122,7 +122,7 @@ function App() {
           <p className="detail-highlight">11:00 am &ndash; 1:00 pm</p>
           <div className="detail-divider" />
           <p>Little Pulp</p>
-          <p>8016 Cooper Avenue</p>
+          <p>80-16 Cooper Avenue</p>
           <p>Glendale, NY 11385</p>
         </div>
         <button className="rsvp-btn" onClick={() => setModalOpen(true)}>

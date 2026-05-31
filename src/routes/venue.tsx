@@ -12,6 +12,19 @@ function VenuePage() {
                 <h1 className="birthday-title">Party Information</h1>
 
                 <div className="venue-card">
+                    <div className="venue-card__icon" aria-hidden="true">🎂</div>
+                    <h2 className="venue-card__name">Details</h2>
+
+                    <ul className="venue-card__desc">
+                        <li>Please make sure to arrive a few minutes early as the folks at Little Pulp will demonstrate the printmaking process at the start of the party. Little Pulp provides the smocks, but things get messy in the studio so please wear clothing you don't mind getting paint on. </li>
+                        <li>Let us know if you have any questions and please inform us of any dietary restrictions by <a href="mailto:carlyanderson82@gmail.com">email</a> or by texting or calling Carly (860.836.5367) or Joe (317.709.6409).</li>
+                        <li>We can't wait to celebrate with you!</li>
+
+                    </ul>
+
+                </div>
+
+                <div className="venue-card">
                     <div className="venue-card__icon" aria-hidden="true">🎨</div>
                     <h2 className="venue-card__name">Little Pulp</h2>
                     <p className="venue-card__address">
@@ -58,6 +71,6 @@ function VenuePage() {
                     </a>
                 </div>
             </section>
-        </main>
+        </main >
     )
 }
