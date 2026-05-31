@@ -157,6 +157,7 @@ body {
 /* ── RSVP button ──────────────────────────────────────────────────────────── */
 .rsvp-btn {
   display: inline-block;
+  margin-top: 1rem;
   background-color: var(--rose);
   color: var(--white);
   font-family: var(--font-display);
