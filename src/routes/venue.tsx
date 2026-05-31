@@ -15,7 +15,7 @@ function VenuePage() {
                     <div className="venue-card__icon" aria-hidden="true">🎨</div>
                     <h2 className="venue-card__name">Little Pulp</h2>
                     <p className="venue-card__address">
-                        8016 Cooper Avenue<br />
+                        80-16 Cooper Avenue<br />
                         Glendale, NY 11385
                     </p>
                     <p className="venue-card__desc">
