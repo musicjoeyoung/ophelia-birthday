@@ -70,11 +70,12 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-    const [modalOpen, setModalOpen] = useState(false)
+    const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
+    const [modalOpen, setModalOpen] = useState(searchParams.get('update') === 'true')
+    const [isUpdateMode, setIsUpdateMode] = useState(searchParams.get('update') === 'true')
     const [formState, setFormState] = useState<FormState>('idle')
     const [errorMsg, setErrorMsg] = useState('')
     const [isDuplicate, setIsDuplicate] = useState(false)
-    const [isUpdateMode, setIsUpdateMode] = useState(false)
     const [submittedAttending, setSubmittedAttending] = useState<boolean>(true)
     const [childName, setChildName] = useState('')
     const [childCount, setChildCount] = useState<1 | 2>(1)
