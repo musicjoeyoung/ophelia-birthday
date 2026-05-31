@@ -74,6 +74,7 @@ function Home() {
     const [formState, setFormState] = useState<FormState>('idle')
     const [errorMsg, setErrorMsg] = useState('')
     const [isDuplicate, setIsDuplicate] = useState(false)
+    const [isUpdateMode, setIsUpdateMode] = useState(false)
     const [submittedAttending, setSubmittedAttending] = useState<boolean>(true)
     const [childName, setChildName] = useState('')
     const [childCount, setChildCount] = useState<1 | 2>(1)
@@ -96,6 +97,7 @@ function Home() {
         setAttending(null)
         setMessage('')
         setIsDuplicate(false)
+        setIsUpdateMode(false)
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -146,11 +148,16 @@ function Home() {
         setFormState('idle')
         setErrorMsg('')
         setIsDuplicate(false)
+        setIsUpdateMode(false)
         resetForm()
     }
 
     async function handleUpdate() {
-        if (attending === null) return
+        if (attending === null) {
+            setFormState('error')
+            setErrorMsg('Please select whether you will be attending')
+            return
+        }
         setFormState('loading')
         setErrorMsg('')
         setIsDuplicate(false)
@@ -168,6 +175,12 @@ function Home() {
                     ...(message.trim() ? { message } : {}),
                 }),
             })
+            if (res.status === 404) {
+                setFormState('error')
+                setErrorMsg("We don't have an RSVP for that email yet — please submit a new one!")
+                setIsUpdateMode(false)
+                return
+            }
             if (!res.ok) {
                 const body = await res.json().catch(() => ({}))
                 throw new Error((body as { message?: string }).message ?? 'Something went wrong')
@@ -250,7 +263,7 @@ function Home() {
                             <>
                                 <h2 className="modal-title">RSVP</h2>
                                 <p className="modal-subtitle">We&rsquo;d love to see you there!</p>
-                                <form className="rsvp-form" onSubmit={handleSubmit} noValidate>
+                                <form className="rsvp-form" onSubmit={isUpdateMode ? (e: React.FormEvent) => { e.preventDefault(); handleUpdate() } : handleSubmit} noValidate>
                                     <div className="form-group">
                                         <label>Will you be attending?</label>
                                         <div className="attending-toggle">
@@ -407,8 +420,26 @@ function Home() {
                                                 </div>
                                             )}
                                             <button type="submit" className="rsvp-btn" disabled={formState === 'loading'}>
-                                                {formState === 'loading' ? 'Sending…' : attending ? 'Count me in!' : 'Send RSVP'}
+                                                {formState === 'loading'
+                                                    ? (isUpdateMode ? 'Updating…' : 'Sending…')
+                                                    : isUpdateMode
+                                                        ? 'Update my RSVP'
+                                                        : attending ? 'Count me in!' : 'Send RSVP'}
                                             </button>
+                                            {!isUpdateMode && (
+                                                <button
+                                                    type="button"
+                                                    className="change-rsvp-link"
+                                                    onClick={() => {
+                                                        setIsUpdateMode(true)
+                                                        setFormState('idle')
+                                                        setErrorMsg('')
+                                                        setIsDuplicate(false)
+                                                    }}
+                                                >
+                                                    Need to change your RSVP?
+                                                </button>
+                                            )}
                                         </>
                                     )}
                                 </form>
