@@ -815,3 +815,9 @@ body {
   color: #2e7d32;
   text-align: center;
 }
+
+/* ── Responsive: tablet and up ────────────────────────────────────────────── */
+@media (min-width: 767px) {
+  .page { max-width: none; }
+  .rainbow-svg { max-width: 600px; }
+}
