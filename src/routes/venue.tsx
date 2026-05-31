@@ -13,7 +13,7 @@ function VenuePage() {
 
                 <div className="venue-card">
                     <div className="venue-card__icon" aria-hidden="true">🎂</div>
-                    <h2 className="venue-card__name">Details</h2>
+                    <h2 className="venue-card__name">Party Information</h2>
 
                     <ul className="venue-card__desc">
                         <li>Please make sure to arrive a few minutes early as the folks at Little Pulp will demonstrate the printmaking process at the start of the party. Little Pulp provides the smocks, but things get messy in the studio so please wear clothing you don't mind getting paint on. </li>
@@ -33,15 +33,23 @@ function VenuePage() {
                     </p>
                     <p className="venue-card__desc">
                         A creative studio where kids (and adults) explore art through painting, printmaking, and more.
-                        They provide smocks but please wear clothing that can get messy!
                     </p>
+
+                    <a
+                        href="https://www.google.com/maps/@40.7089571,-73.8693817,17z?entry=ttu&g_ep=EgoyMDI2MDUyNy4wIKXMDSoASAFQAw%3D%3D"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="venue-link"
+                    >
+                        Directions ↗
+                    </a>
                     <a
                         href="https://www.shopatlaspark.com/directory-map#/profile?location=1056810"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="venue-link"
                     >
-                        Locating Little Pulp ↗
+                        Locating Little Pulp (once you're there) ↗
                     </a>
                 </div>
 

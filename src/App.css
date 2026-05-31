@@ -570,6 +570,10 @@ body {
   margin-bottom: 1rem;
 }
 
+.venue-card a {
+  margin-bottom: 1rem;
+}
+
 .venue-card__list{
   text-align: center;
   color: var(--rose-mid);
