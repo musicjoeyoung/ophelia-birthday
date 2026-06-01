@@ -870,6 +870,33 @@ body {
   text-align: center;
 }
 
+.admin-invite-add-form {
+  margin-bottom: 1.25rem;
+}
+
+.admin-invite-add-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.admin-invite-add-row input {
+  flex: 1 1 160px;
+  padding: 0.55rem 0.85rem;
+  border: 2px solid rgba(193, 59, 108, 0.22);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--rose);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.admin-invite-add-row input:focus { border-color: var(--rose); }
+.admin-invite-add-row input::placeholder { color: rgba(193, 59, 108, 0.38); }
+
 /* ── Responsive: tablet and up ────────────────────────────────────────────── */
 @media (min-width: 767px) {
   .page { max-width: none; }

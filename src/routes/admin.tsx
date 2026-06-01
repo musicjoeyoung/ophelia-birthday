@@ -22,6 +22,14 @@ type Rsvp = {
     createdAt: string
 }
 
+type Invitee = {
+    id: number
+    name: string
+    email: string | null
+    notes: string | null
+    createdAt: string
+}
+
 // ── Login screen ──────────────────────────────────────────────────────────────
 function LoginForm({ onLogin }: { onLogin: (token: string) => void }) {
     const [password, setPassword] = useState('')
@@ -86,6 +94,18 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     const [sendMsg, setSendMsg] = useState('')
     const emailRef = useRef<HTMLTextAreaElement>(null)
 
+    // Invite list state
+    const [invitees, setInvitees] = useState<Invitee[]>([])
+    const [inviteesLoading, setInviteesLoading] = useState(true)
+    const [selectedInvitees, setSelectedInvitees] = useState<Set<number>>(new Set())
+    const [newName, setNewName] = useState('')
+    const [newEmail, setNewEmail] = useState('')
+    const [newNotes, setNewNotes] = useState('')
+    const [addState, setAddState] = useState<'idle' | 'saving' | 'error'>('idle')
+    const [inviteExtraText, setInviteExtraText] = useState('')
+    const [inviteSendState, setInviteSendState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
+    const [inviteSendMsg, setInviteSendMsg] = useState('')
+
     async function fetchRsvps() {
         setLoading(true)
         try {
@@ -101,6 +121,92 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     }
 
     useEffect(() => { fetchRsvps() }, [])
+
+    async function fetchInvitees() {
+        setInviteesLoading(true)
+        try {
+            const res = await fetch(`${API_URL}/api/admin/invitees`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            if (res.status === 401) { onLogout(); return }
+            const data = await res.json() as Invitee[]
+            setInvitees(data)
+        } finally {
+            setInviteesLoading(false)
+        }
+    }
+
+    useEffect(() => { fetchInvitees() }, [])
+
+    async function handleAddInvitee(e: React.FormEvent) {
+        e.preventDefault()
+        if (!newName.trim()) return
+        setAddState('saving')
+        try {
+            const res = await fetch(`${API_URL}/api/admin/invitees`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ name: newName.trim(), email: newEmail.trim() || undefined, notes: newNotes.trim() || undefined }),
+            })
+            if (!res.ok) throw new Error()
+            setNewName('')
+            setNewEmail('')
+            setNewNotes('')
+            setAddState('idle')
+            fetchInvitees()
+        } catch {
+            setAddState('error')
+        }
+    }
+
+    async function handleDeleteInvitee(id: number) {
+        await fetch(`${API_URL}/api/admin/invitees/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        setSelectedInvitees((prev) => { const next = new Set(prev); next.delete(id); return next })
+        fetchInvitees()
+    }
+
+    function toggleInvitee(id: number) {
+        setSelectedInvitees((prev) => {
+            const next = new Set(prev)
+            next.has(id) ? next.delete(id) : next.add(id)
+            return next
+        })
+    }
+
+    function selectAllWithEmail() {
+        setSelectedInvitees(new Set(invitees.filter((i) => i.email).map((i) => i.id)))
+    }
+
+    async function handleSendInvite(e: React.FormEvent) {
+        e.preventDefault()
+        if (!selectedInvitees.size) return
+        setInviteSendState('sending')
+        setInviteSendMsg('')
+        try {
+            const res = await fetch(`${API_URL}/api/admin/send-invite`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ ids: Array.from(selectedInvitees), extra_text: inviteExtraText.trim() || undefined }),
+            })
+            const data = await res.json() as { sent: number; failed: string[]; skipped: number }
+            const skipNote = data.skipped ? ` (${data.skipped} skipped — no email address)` : ''
+            if (data.failed?.length) {
+                setInviteSendState('error')
+                setInviteSendMsg(`Sent ${data.sent}. Failed: ${data.failed.join(', ')}${skipNote}`)
+            } else {
+                setInviteSendState('done')
+                setInviteSendMsg(`Sent to ${data.sent} ${data.sent === 1 ? 'person' : 'people'}!${skipNote} ✓`)
+                setInviteExtraText('')
+                setSelectedInvitees(new Set())
+            }
+        } catch {
+            setInviteSendState('error')
+            setInviteSendMsg('Something went wrong. Try again.')
+        }
+    }
 
     function toggleOne(email: string) {
         setSelected((prev) => {
@@ -196,6 +302,135 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                 <div className="admin-stat admin-stat--yes"><span className="admin-stat__num">{yesCount}</span><span>Attending</span></div>
                 <div className="admin-stat admin-stat--no"><span className="admin-stat__num">{noCount}</span><span>Not Attending</span></div>
             </div>
+
+            {/* Invite List */}
+            <section className="admin-section">
+                <h2 className="admin-section-title">Invite List</h2>
+
+                <form className="admin-invite-add-form" onSubmit={handleAddInvitee} noValidate>
+                    <div className="admin-invite-add-row">
+                        <input
+                            type="text"
+                            placeholder="Name *"
+                            value={newName}
+                            onChange={(e) => setNewName(e.target.value)}
+                            required
+                            disabled={addState === 'saving'}
+                        />
+                        <input
+                            type="email"
+                            placeholder="Email (optional)"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            disabled={addState === 'saving'}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Notes (optional)"
+                            value={newNotes}
+                            onChange={(e) => setNewNotes(e.target.value)}
+                            disabled={addState === 'saving'}
+                        />
+                        <button type="submit" className="admin-btn" disabled={!newName.trim() || addState === 'saving'}>
+                            {addState === 'saving' ? 'Adding…' : 'Add'}
+                        </button>
+                    </div>
+                    {addState === 'error' && <p className="form-error" role="alert">Failed to add. Try again.</p>}
+                </form>
+
+                {inviteesLoading ? (
+                    <p className="admin-empty">Loading…</p>
+                ) : invitees.length === 0 ? (
+                    <p className="admin-empty">No invitees yet. Add some above.</p>
+                ) : (
+                    <>
+                        <div className="admin-select-btns" style={{ marginBottom: '0.5rem' }}>
+                            <button className="admin-btn admin-btn--sm" onClick={selectAllWithEmail}>Select all with email</button>
+                            <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={() => setSelectedInvitees(new Set())}>Clear</button>
+                        </div>
+                        <div className="admin-table-wrap">
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Notes</th>
+                                        <th>Added</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {invitees.map((inv) => (
+                                        <tr
+                                            key={inv.id}
+                                            className={selectedInvitees.has(inv.id) ? 'admin-table__row--selected' : ''}
+                                            onClick={() => inv.email && toggleInvitee(inv.id)}
+                                            style={!inv.email ? { opacity: 0.6 } : { cursor: 'pointer' }}
+                                        >
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedInvitees.has(inv.id)}
+                                                    disabled={!inv.email}
+                                                    onChange={() => toggleInvitee(inv.id)}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            </td>
+                                            <td>{inv.name}</td>
+                                            <td>{inv.email ?? <span style={{ color: '#aaa' }}>—</span>}</td>
+                                            <td className="admin-table__message">{inv.notes ?? '—'}</td>
+                                            <td>{new Date(inv.createdAt).toLocaleDateString()}</td>
+                                            <td>
+                                                <button
+                                                    className="admin-btn admin-btn--sm admin-btn--ghost"
+                                                    onClick={(e) => { e.stopPropagation(); handleDeleteInvitee(inv.id) }}
+                                                >Remove</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <form className="admin-email-form" style={{ marginTop: '1.5rem' }} onSubmit={handleSendInvite} noValidate>
+                            <h3 style={{ margin: '0 0 0.75rem', fontSize: '1rem', color: '#444' }}>
+                                Send Invite Email
+                                {selectedInvitees.size > 0 && (
+                                    <span className="admin-selected-count"> — {selectedInvitees.size} selected</span>
+                                )}
+                            </h3>
+                            <p style={{ fontSize: '0.85rem', color: '#888', margin: '0 0 1rem' }}>
+                                Sends the party flyer + RSVP link. Only invitees with an email address can be selected.
+                            </p>
+                            <div className="form-group">
+                                <label htmlFor="invite-extra">Extra message (optional)</label>
+                                <textarea
+                                    id="invite-extra"
+                                    value={inviteExtraText}
+                                    onChange={(e) => setInviteExtraText(e.target.value)}
+                                    rows={3}
+                                    placeholder="e.g. So excited to see you there!"
+                                    disabled={inviteSendState === 'sending'}
+                                />
+                            </div>
+                            {inviteSendState === 'done' && <p className="admin-send-ok" role="status">{inviteSendMsg}</p>}
+                            {inviteSendState === 'error' && <p className="form-error" role="alert">{inviteSendMsg}</p>}
+                            <button
+                                type="submit"
+                                className="rsvp-btn"
+                                disabled={!selectedInvitees.size || inviteSendState === 'sending'}
+                            >
+                                {inviteSendState === 'sending'
+                                    ? 'Sending…'
+                                    : selectedInvitees.size
+                                        ? `Send invite to ${selectedInvitees.size} ${selectedInvitees.size === 1 ? 'person' : 'people'}`
+                                        : 'Select recipients above'}
+                            </button>
+                        </form>
+                    </>
+                )}
+            </section>
 
             {/* RSVP Table */}
             <section className="admin-section">
