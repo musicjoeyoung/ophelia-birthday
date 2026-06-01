@@ -327,7 +327,7 @@ function Home() {
                                                     type="text"
                                                     value={childName}
                                                     onChange={(e) => setChildName(e.target.value)}
-                                                    placeholder="Child's name"
+                                                    placeholder={attending ? "Child's name" : "Guest name(s)"}
                                                     required
                                                     disabled={formState === 'loading'}
                                                 />
