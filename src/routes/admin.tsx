@@ -324,6 +324,123 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                 <div className="admin-stat admin-stat--no"><span className="admin-stat__num">{noCount}</span><span>Not Attending</span></div>
             </div>
 
+            {/* RSVP Table */}
+            <section className="admin-section">
+                <div className="admin-section-header">
+                    <h2 className="admin-section-title">Guest List</h2>
+                    <div className="admin-select-btns">
+                        <button className="admin-btn admin-btn--sm" onClick={() => selectGroup('all')}>All</button>
+                        <button className="admin-btn admin-btn--sm admin-btn--yes" onClick={() => selectGroup('yes')}>Attending</button>
+                        <button className="admin-btn admin-btn--sm admin-btn--no" onClick={() => selectGroup('no')}>Not Attending</button>
+                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={clearSelection}>Clear</button>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <p className="admin-empty">Loading…</p>
+                ) : rsvps.length === 0 ? (
+                    <p className="admin-empty">No RSVPs yet.</p>
+                ) : (
+                    <div className="admin-table-wrap">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Child(ren)</th>
+                                    <th>Adult(s)</th>
+                                    <th>Email</th>
+                                    <th>Attending</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rsvps.map((r) => (
+                                    <tr
+                                        key={r.id}
+                                        className={selected.has(r.email) ? 'admin-table__row--selected' : ''}
+                                        onClick={() => toggleOne(r.email)}
+                                    >
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                checked={selected.has(r.email)}
+                                                onChange={() => toggleOne(r.email)}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                        </td>
+                                        <td>{r.childName}{r.childName2 ? ` & ${r.childName2}` : ''}</td>
+                                        <td>{r.adultName}{r.adultName2 ? ` & ${r.adultName2}` : ''}</td>
+                                        <td>{r.email}</td>
+                                        <td>
+                                            <span className={`admin-badge ${r.attending ? 'admin-badge--yes' : 'admin-badge--no'}`}>
+                                                {r.attending ? 'Yes' : 'No'}
+                                            </span>
+                                        </td>
+                                        <td className="admin-table__message">
+                                            {r.message
+                                                ? r.message.length > 40
+                                                    ? <details className="msg-details"><summary>{r.message.slice(0, 40)}…</summary>{r.message}</details>
+                                                    : r.message
+                                                : '—'}
+                                        </td>
+                                        <td>{new Date(r.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </section>
+
+            {/* Email Compose */}
+            <section className="admin-section">
+                <h2 className="admin-section-title">
+                    Send Email
+                    {selected.size > 0 && (
+                        <span className="admin-selected-count"> — {selected.size} selected</span>
+                    )}
+                </h2>
+                <form className="admin-email-form" onSubmit={handleSend} noValidate>
+                    <div className="form-group">
+                        <label htmlFor="email-subject">Subject</label>
+                        <input
+                            id="email-subject"
+                            type="text"
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
+                            placeholder="e.g. Party reminder — this Saturday!"
+                            disabled={sendState === 'sending'}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="email-body">Message</label>
+                        <textarea
+                            id="email-body"
+                            ref={emailRef}
+                            value={body}
+                            onChange={(e) => setBody(e.target.value)}
+                            rows={7}
+                            placeholder="Write your message here…"
+                            disabled={sendState === 'sending'}
+                        />
+                    </div>
+                    {sendState === 'done' && <p className="admin-send-ok" role="status">{sendMsg}</p>}
+                    {sendState === 'error' && <p className="form-error" role="alert">{sendMsg}</p>}
+                    <button
+                        type="submit"
+                        className="rsvp-btn"
+                        disabled={!selected.size || !subject.trim() || !body.trim() || sendState === 'sending'}
+                    >
+                        {sendState === 'sending'
+                            ? 'Sending…'
+                            : selected.size
+                                ? `Send to ${selected.size} ${selected.size === 1 ? 'person' : 'people'}`
+                                : 'Select recipients above'}
+                    </button>
+                </form>
+            </section>
+
             {/* Invite List */}
             <section className="admin-section">
                 <h2 className="admin-section-title">Invite List</h2>
@@ -467,123 +584,6 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                         </form>
                     </>
                 )}
-            </section>
-
-            {/* RSVP Table */}
-            <section className="admin-section">
-                <div className="admin-section-header">
-                    <h2 className="admin-section-title">Guest List</h2>
-                    <div className="admin-select-btns">
-                        <button className="admin-btn admin-btn--sm" onClick={() => selectGroup('all')}>All</button>
-                        <button className="admin-btn admin-btn--sm admin-btn--yes" onClick={() => selectGroup('yes')}>Attending</button>
-                        <button className="admin-btn admin-btn--sm admin-btn--no" onClick={() => selectGroup('no')}>Not Attending</button>
-                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={clearSelection}>Clear</button>
-                    </div>
-                </div>
-
-                {loading ? (
-                    <p className="admin-empty">Loading…</p>
-                ) : rsvps.length === 0 ? (
-                    <p className="admin-empty">No RSVPs yet.</p>
-                ) : (
-                    <div className="admin-table-wrap">
-                        <table className="admin-table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Child(ren)</th>
-                                    <th>Adult(s)</th>
-                                    <th>Email</th>
-                                    <th>Attending</th>
-                                    <th>Message</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rsvps.map((r) => (
-                                    <tr
-                                        key={r.id}
-                                        className={selected.has(r.email) ? 'admin-table__row--selected' : ''}
-                                        onClick={() => toggleOne(r.email)}
-                                    >
-                                        <td>
-                                            <input
-                                                type="checkbox"
-                                                checked={selected.has(r.email)}
-                                                onChange={() => toggleOne(r.email)}
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                        </td>
-                                        <td>{r.childName}{r.childName2 ? ` & ${r.childName2}` : ''}</td>
-                                        <td>{r.adultName}{r.adultName2 ? ` & ${r.adultName2}` : ''}</td>
-                                        <td>{r.email}</td>
-                                        <td>
-                                            <span className={`admin-badge ${r.attending ? 'admin-badge--yes' : 'admin-badge--no'}`}>
-                                                {r.attending ? 'Yes' : 'No'}
-                                            </span>
-                                        </td>
-                                        <td className="admin-table__message">
-                                            {r.message
-                                                ? r.message.length > 40
-                                                    ? <details className="msg-details"><summary>{r.message.slice(0, 40)}…</summary>{r.message}</details>
-                                                    : r.message
-                                                : '—'}
-                                        </td>
-                                        <td>{new Date(r.createdAt).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </section>
-
-            {/* Email Compose */}
-            <section className="admin-section">
-                <h2 className="admin-section-title">
-                    Send Email
-                    {selected.size > 0 && (
-                        <span className="admin-selected-count"> — {selected.size} selected</span>
-                    )}
-                </h2>
-                <form className="admin-email-form" onSubmit={handleSend} noValidate>
-                    <div className="form-group">
-                        <label htmlFor="email-subject">Subject</label>
-                        <input
-                            id="email-subject"
-                            type="text"
-                            value={subject}
-                            onChange={(e) => setSubject(e.target.value)}
-                            placeholder="e.g. Party reminder — this Saturday!"
-                            disabled={sendState === 'sending'}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="email-body">Message</label>
-                        <textarea
-                            id="email-body"
-                            ref={emailRef}
-                            value={body}
-                            onChange={(e) => setBody(e.target.value)}
-                            rows={7}
-                            placeholder="Write your message here…"
-                            disabled={sendState === 'sending'}
-                        />
-                    </div>
-                    {sendState === 'done' && <p className="admin-send-ok" role="status">{sendMsg}</p>}
-                    {sendState === 'error' && <p className="form-error" role="alert">{sendMsg}</p>}
-                    <button
-                        type="submit"
-                        className="rsvp-btn"
-                        disabled={!selected.size || !subject.trim() || !body.trim() || sendState === 'sending'}
-                    >
-                        {sendState === 'sending'
-                            ? 'Sending…'
-                            : selected.size
-                                ? `Send to ${selected.size} ${selected.size === 1 ? 'person' : 'people'}`
-                                : 'Select recipients above'}
-                    </button>
-                </form>
             </section>
         </main>
     )
