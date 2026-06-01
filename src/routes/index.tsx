@@ -228,7 +228,8 @@ function Home() {
                 </h1>
                 <div className="details">
                     <p className="detail-highlight">Painting, printmaking, food, &amp; fun!</p>
-                    <p className="detail-highlight">11:00 am &ndash; 1:00 pm</p>
+                    <p className="detail-highlight">Sunday, July 12th</p>
+                    <p className="detail-highlight">11:00am &ndash; 1:00pm</p>
                     <div className="detail-divider" />
                     <p>Little Pulp</p>
                     <p>80-16 Cooper Avenue</p>
