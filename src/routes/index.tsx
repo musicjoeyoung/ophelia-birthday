@@ -320,7 +320,7 @@ function Home() {
                                                     </select>
                                                 )}
                                                 <label htmlFor="rsvp-child-name">
-                                                    {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest'}
+                                                    {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest(s)'}
                                                 </label>
                                                 <input
                                                     id="rsvp-child-name"
@@ -425,7 +425,7 @@ function Home() {
                                                             className="update-rsvp-btn"
                                                             onClick={handleUpdate}
                                                         >
-                                                            Update my RSVP →
+                                                            Update my RSVP
                                                         </button>
                                                     )}
                                                 </div>
