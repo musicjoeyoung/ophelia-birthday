@@ -334,7 +334,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                         <button className="admin-btn admin-btn--sm" onClick={() => selectGroup('all')}>All</button>
                         <button className="admin-btn admin-btn--sm admin-btn--yes" onClick={() => selectGroup('yes')}>Attending</button>
                         <button className="admin-btn admin-btn--sm admin-btn--no" onClick={() => selectGroup('no')}>Not Attending</button>
-                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={clearSelection}>Clear</button>
+                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={clearSelection}>Clear Selection</button>
                     </div>
                 </div>
 
