@@ -304,7 +304,9 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
         URL.revokeObjectURL(url)
     }
 
-    const yesCount = rsvps.filter((r) => r.attending).length
+    const yesCount = rsvps
+        .filter((r) => r.attending)
+        .reduce((sum, r) => sum + 1 + (r.childName2 ? 1 : 0) + 1 + (r.adultName2 ? 1 : 0), 0)
     const noCount = rsvps.filter((r) => !r.attending).length
 
     return (
