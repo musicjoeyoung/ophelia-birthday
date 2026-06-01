@@ -98,6 +98,10 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     const [invitees, setInvitees] = useState<Invitee[]>([])
     const [inviteesLoading, setInviteesLoading] = useState(true)
     const [selectedInvitees, setSelectedInvitees] = useState<Set<number>>(new Set())
+    const [editingInviteeId, setEditingInviteeId] = useState<number | null>(null)
+    const [editName, setEditName] = useState('')
+    const [editEmail, setEditEmail] = useState('')
+    const [editNotes, setEditNotes] = useState('')
     const [newName, setNewName] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [newNotes, setNewNotes] = useState('')
@@ -165,6 +169,23 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             headers: { Authorization: `Bearer ${token}` },
         })
         setSelectedInvitees((prev) => { const next = new Set(prev); next.delete(id); return next })
+        fetchInvitees()
+    }
+
+    function startEditInvitee(inv: Invitee) {
+        setEditingInviteeId(inv.id)
+        setEditName(inv.name)
+        setEditEmail(inv.email ?? '')
+        setEditNotes(inv.notes ?? '')
+    }
+
+    async function handleSaveInvitee(id: number) {
+        await fetch(`${API_URL}/api/admin/invitees/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ name: editName.trim(), email: editEmail.trim() || null, notes: editNotes.trim() || null }),
+        })
+        setEditingInviteeId(null)
         fetchInvitees()
     }
 
@@ -365,28 +386,43 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                                         <tr
                                             key={inv.id}
                                             className={selectedInvitees.has(inv.id) ? 'admin-table__row--selected' : ''}
-                                            onClick={() => inv.email && toggleInvitee(inv.id)}
-                                            style={!inv.email ? { opacity: 0.6 } : { cursor: 'pointer' }}
+                                            onClick={() => editingInviteeId !== inv.id && inv.email && toggleInvitee(inv.id)}
+                                            style={!inv.email && editingInviteeId !== inv.id ? { opacity: 0.6 } : editingInviteeId !== inv.id ? { cursor: 'pointer' } : {}}
                                         >
                                             <td>
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedInvitees.has(inv.id)}
-                                                    disabled={!inv.email}
+                                                    disabled={!inv.email || editingInviteeId === inv.id}
                                                     onChange={() => toggleInvitee(inv.id)}
                                                     onClick={(e) => e.stopPropagation()}
                                                 />
                                             </td>
-                                            <td>{inv.name}</td>
-                                            <td>{inv.email ?? <span style={{ color: '#aaa' }}>—</span>}</td>
-                                            <td className="admin-table__message">{inv.notes ?? '—'}</td>
-                                            <td>{new Date(inv.createdAt).toLocaleDateString()}</td>
-                                            <td>
-                                                <button
-                                                    className="admin-btn admin-btn--sm admin-btn--ghost"
-                                                    onClick={(e) => { e.stopPropagation(); handleDeleteInvitee(inv.id) }}
-                                                >Remove</button>
-                                            </td>
+                                            {editingInviteeId === inv.id ? (
+                                                <>
+                                                    <td><input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} onClick={(e) => e.stopPropagation()} style={{ width: '100%' }} /></td>
+                                                    <td><input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} onClick={(e) => e.stopPropagation()} style={{ width: '100%' }} /></td>
+                                                    <td><input type="text" value={editNotes} onChange={(e) => setEditNotes(e.target.value)} onClick={(e) => e.stopPropagation()} style={{ width: '100%' }} /></td>
+                                                    <td></td>
+                                                    <td onClick={(e) => e.stopPropagation()} style={{ whiteSpace: 'nowrap' }}>
+                                                        <button className="admin-btn admin-btn--sm" onClick={() => handleSaveInvitee(inv.id)}>Save</button>
+                                                        {' '}
+                                                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={() => setEditingInviteeId(null)}>Cancel</button>
+                                                    </td>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <td>{inv.name}</td>
+                                                    <td>{inv.email ?? <span style={{ color: '#aaa' }}>—</span>}</td>
+                                                    <td className="admin-table__message">{inv.notes ?? '—'}</td>
+                                                    <td>{new Date(inv.createdAt).toLocaleDateString()}</td>
+                                                    <td onClick={(e) => e.stopPropagation()} style={{ whiteSpace: 'nowrap' }}>
+                                                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={() => startEditInvitee(inv)}>Edit</button>
+                                                        {' '}
+                                                        <button className="admin-btn admin-btn--sm admin-btn--ghost" onClick={() => handleDeleteInvitee(inv.id)}>Remove</button>
+                                                    </td>
+                                                </>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>
