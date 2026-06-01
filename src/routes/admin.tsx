@@ -327,6 +327,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             {/* Invite List */}
             <section className="admin-section">
                 <h2 className="admin-section-title">Invite List</h2>
+                <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Separate names by comma.</p>
 
                 <form className="admin-invite-add-form" onSubmit={handleAddInvitee} noValidate>
                     <div className="admin-invite-add-row">
