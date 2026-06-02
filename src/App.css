@@ -738,6 +738,7 @@ body {
 
 @media (max-width: 767px) {
   .admin-stat {
+    display: flex;
     flex-direction: column;
     justify-content: center;
   }
