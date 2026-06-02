@@ -341,14 +341,20 @@ function Home() {
                                                         />
                                                     </>
                                                 )}
-                                                id="rsvp-child-name-2"
-                                                type="text"
-                                                value={childName2}
-                                                onChange={(e) => setChildName2(e.target.value)}
-                                                placeholder="Child's name"
-                                                disabled={formState === 'loading'}
-                                                    />
                                             </div>
+
+                                            {attending && childCount === 2 && (
+                                                <div className="form-group">
+                                                    <label htmlFor="rsvp-child-name-2">Second child&rsquo;s name</label>
+                                                    <input
+                                                        id="rsvp-child-name-2"
+                                                        type="text"
+                                                        value={childName2}
+                                                        onChange={(e) => setChildName2(e.target.value)}
+                                                        placeholder="Child's name"
+                                                        disabled={formState === 'loading'}
+                                                    />
+                                                </div>
                                             )}
 
                                             {attending && (
