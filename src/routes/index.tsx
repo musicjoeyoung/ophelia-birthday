@@ -78,7 +78,7 @@ function Home() {
     const [isDuplicate, setIsDuplicate] = useState(false)
     const [submittedAttending, setSubmittedAttending] = useState<boolean>(true)
     const [childName, setChildName] = useState('')
-    const [childCount, setChildCount] = useState<1 | 2>(1)
+    const [childCount, setChildCount] = useState<0 | 1 | 2>(1)
     const [childName2, setChildName2] = useState('')
     const [adultName, setAdultName] = useState('')
     const [adultCount, setAdultCount] = useState<1 | 2>(1)
@@ -116,7 +116,7 @@ function Home() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    child_name: childName,
+                    ...(!attending || childCount > 0 ? { child_name: childName } : {}),
                     ...(attending && childCount === 2 && childName2.trim() ? { child_name_2: childName2 } : {}),
                     ...(attending ? { adult_name: adultName } : {}),
                     ...(attending && adultCount === 2 && adultName2.trim() ? { adult_name_2: adultName2 } : {}),
@@ -167,7 +167,7 @@ function Home() {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    child_name: childName,
+                    ...(!attending || childCount > 0 ? { child_name: childName } : {}),
                     ...(attending && childCount === 2 && childName2.trim() ? { child_name_2: childName2 } : {}),
                     ...(attending ? { adult_name: adultName } : {}),
                     ...(attending && adultCount === 2 && adultName2.trim() ? { adult_name_2: adultName2 } : {}),
@@ -313,39 +313,42 @@ function Home() {
                                                         id="rsvp-child-count"
                                                         className="form-select"
                                                         value={childCount}
-                                                        onChange={(e) => setChildCount(Number(e.target.value) as 1 | 2)}
+                                                        onChange={(e) => {
+                                                            const val = Number(e.target.value) as 0 | 1 | 2
+                                                            setChildCount(val)
+                                                            if (val === 0) { setChildName(''); setChildName2('') }
+                                                        }}
                                                         disabled={formState === 'loading'}
                                                     >
+                                                        <option value={0}>No children</option>
                                                         <option value={1}>1 child</option>
                                                         <option value={2}>2 children</option>
                                                     </select>
                                                 )}
-                                                <label htmlFor="rsvp-child-name">
-                                                    {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest(s)'}
-                                                </label>
-                                                <input
-                                                    id="rsvp-child-name"
-                                                    type="text"
-                                                    value={childName}
-                                                    onChange={(e) => setChildName(e.target.value)}
-                                                    placeholder={attending ? "Child's name" : "Guest name(s)"}
-                                                    required
-                                                    disabled={formState === 'loading'}
-                                                />
-                                            </div>
-
-                                            {attending && childCount === 2 && (
-                                                <div className="form-group">
-                                                    <label htmlFor="rsvp-child-name-2">Second child&rsquo;s name</label>
-                                                    <input
-                                                        id="rsvp-child-name-2"
-                                                        type="text"
-                                                        value={childName2}
-                                                        onChange={(e) => setChildName2(e.target.value)}
-                                                        placeholder="Child's name"
-                                                        disabled={formState === 'loading'}
+                                                {(!attending || childCount > 0) && (
+                                                    <>
+                                                        <label htmlFor="rsvp-child-name">
+                                                            {attending ? (childCount === 2 ? 'First child\'s name' : 'Name of child(ren) attending') : 'Name of invited guest(s)'}
+                                                        </label>
+                                                        <input
+                                                            id="rsvp-child-name"
+                                                            type="text"
+                                                            value={childName}
+                                                            onChange={(e) => setChildName(e.target.value)}
+                                                            placeholder={attending ? "Child's name" : "Guest name(s)"}
+                                                            required
+                                                            disabled={formState === 'loading'}
+                                                        />
+                                                    </>
+                                                )}
+                                                id="rsvp-child-name-2"
+                                                type="text"
+                                                value={childName2}
+                                                onChange={(e) => setChildName2(e.target.value)}
+                                                placeholder="Child's name"
+                                                disabled={formState === 'loading'}
                                                     />
-                                                </div>
+                                            </div>
                                             )}
 
                                             {attending && (
