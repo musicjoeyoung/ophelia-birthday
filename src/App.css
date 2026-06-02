@@ -702,6 +702,40 @@ body {
 .admin-stat--yes .admin-stat__num { color: #2e7d32; }
 .admin-stat--no .admin-stat__num  { color: var(--lavender); }
 
+.admin-stat--yes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.admin-stat__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.admin-stat__breakdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #4a7c4e;
+  opacity: 0.8;
+  min-width: 40px;
+}
+.admin-stat__sub-num {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: #2e7d32;
+  line-height: 1.1;
+  margin-bottom: 0.1rem;
+}
+.admin-stat__sub-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .admin-section {
   background: var(--white);
   border-radius: 20px;

@@ -304,9 +304,10 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
         URL.revokeObjectURL(url)
     }
 
-    const yesCount = rsvps
-        .filter((r) => r.attending)
-        .reduce((sum, r) => sum + (r.childName ? 1 : 0) + (r.childName2 ? 1 : 0) + 1 + (r.adultName2 ? 1 : 0), 0)
+    const yesRsvps = rsvps.filter((r) => r.attending)
+    const yesCount = yesRsvps.reduce((sum, r) => sum + (r.childName ? 1 : 0) + (r.childName2 ? 1 : 0) + 1 + (r.adultName2 ? 1 : 0), 0)
+    const childCount = yesRsvps.reduce((sum, r) => sum + (r.childName ? 1 : 0) + (r.childName2 ? 1 : 0), 0)
+    const adultCount = yesRsvps.reduce((sum, r) => sum + 1 + (r.adultName2 ? 1 : 0), 0)
     const noCount = rsvps.filter((r) => !r.attending).length
 
     return (
@@ -322,7 +323,20 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
 
             <div className="admin-stats">
                 <div className="admin-stat"><span className="admin-stat__num">{rsvps.length}</span><span>Total RSVPs</span></div>
-                <div className="admin-stat admin-stat--yes"><span className="admin-stat__num">{yesCount}</span><span>Attending</span></div>
+                <div className="admin-stat admin-stat--yes">
+                    <div className="admin-stat__breakdown admin-stat__breakdown--left">
+                        <span className="admin-stat__sub-num">{childCount}</span>
+                        <span className="admin-stat__sub-label">Children</span>
+                    </div>
+                    <div className="admin-stat__main">
+                        <span className="admin-stat__num">{yesCount}</span>
+                        <span>Attending</span>
+                    </div>
+                    <div className="admin-stat__breakdown admin-stat__breakdown--right">
+                        <span className="admin-stat__sub-num">{adultCount}</span>
+                        <span className="admin-stat__sub-label">Adults</span>
+                    </div>
+                </div>
                 <div className="admin-stat admin-stat--no"><span className="admin-stat__num">{noCount}</span><span>Not Attending</span></div>
             </div>
 
