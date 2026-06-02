@@ -736,6 +736,17 @@ body {
   letter-spacing: 0.04em;
 }
 
+@media (max-width: 767px) {
+  .admin-stat {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .admin-stat--yes {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .admin-section {
   background: var(--white);
   border-radius: 20px;
